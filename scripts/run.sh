@@ -1,6 +1,9 @@
 #!/bin/bash
-#set -e
 
+mkdir -p "../data"
+# Adjust the following lines if you plan to run this script for a new organism
+wget -P ../ https://zenodo.org/records/11094116/files/data.tar.gz
+tar -xzf ../data.tar.gz -C ..
 gff_path="../data/TriTrypDB-65_TbruceiTREU927.gff"
 genome_fasta_path="../data/TriTrypDB-65_TbruceiTREU927_Genome.fasta"
 proteome_fasta_path="../data/TriTrypDB-65_TbruceiTREU927_AnnotatedProteins.fasta"
@@ -8,6 +11,7 @@ genus_proteomes="../data/Trypanosomes_prot.fasta"
 genus_cds="../data/Trypanosomes_cds.fasta"
 # Note: In the orthologous tables, the first column should correspond to the query organism, and the second column should be the closest organism
 orths_tbl_path="../data/rbh_tb927_trypanosomes.tsv"
+
 
 
 # Adjust the path to the following tools if needed
@@ -18,6 +22,7 @@ pal2nal_path="pal2nal.pl"
 PhyML_path="PhyML"
 hyphy_path="hyphy"
 
+# Adjust the number of available threads:
 threads=20
 
 
