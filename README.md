@@ -43,7 +43,7 @@ Each gene-specific directory will contain the following files:
 
 - `ori_f_doms.tsv`: Domains predicted on the original ORF of the query.
 - `nonbroken_ali.tsv`: Alignment of the query with the subject (Diamond output).
-- `broken_ali.tsv`: Alignment of the query with the subject showing each frame separately. If the corrected ORF includes flanking regions, each region (3' or 5') is displayed on a separate line.
+- `broken_ali.tsv`: Alignment of the query with the subject showing each frame separately. If the corrected ORF includes flanking regions, each region (3' or 5') is displayed on a separate line. This file is generated only for genes in the pf directory.
 - `subject_doms.tsv`: Domains predicted on the subject used for correcting the ORF of the query.
 - `correctedseq_doms.tsv`: Domains predicted on the corrected ORF of the query.
 - `orths.nal.RELAX.json`: Output from the selection analysis.
