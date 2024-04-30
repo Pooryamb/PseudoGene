@@ -58,7 +58,7 @@ sig_alignments_p = has_sig_domcov_inc(alignments_p, dom_cov_len_inc_thresh, dom_
 # For psuedogenes predicted on the same direction as the current gene (with a positive frame), we need to know the frame
 # at the start and the end of the alignment. But for the negative frames, we don't need such a thing because it is not possible
 # to have a protein sequence from negative and positive frames.
-sig_alignments_p.to_csv("sig_ali_p.tsv", sep="\t", index=None)
+
 sig_alignments_p["qframe_end"] = sig_alignments_p.apply(lambda x: find_end_frame(x["qseq"], x["qframe"]), axis=1)
 sig_alignments_p[["start_codon_on_sadj_pr", "stop_codon_on_sadj_pr"]] = sig_alignments_p.apply(get_orf_locs_on_sadj_q, axis=1)
 
