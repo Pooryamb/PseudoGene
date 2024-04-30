@@ -1,0 +1,1 @@
+gff_cols = ["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]
