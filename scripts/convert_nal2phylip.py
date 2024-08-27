@@ -9,6 +9,8 @@ nal_files_path = glob.glob("../data/manual_checking/*/*/seq4dnds/*.nal")
 
 for file_path in nal_files_path:
     seq_dict = fasta2dict(file_path)
+    if all([x=="" for x in seq_dict.values()]):
+        continue
     new2tritryp_mapping = {f"A{i}":list(seq_dict.keys())[i] for i in range(len(seq_dict))}
     tritryp2new_mapping = {y:x for (x,y) in new2tritryp_mapping.items()}
     
