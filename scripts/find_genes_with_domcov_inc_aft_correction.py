@@ -83,11 +83,8 @@ if not(ipr_sadj_prot_n.empty):
         gene_dmnd_ali.to_csv(f"{dir_path}/nonbroken_ali.tsv", sep="\t", index=None)
         gene_broken_dmnd_ali = broken_rev_alis_pg_n[broken_rev_alis_pg_n["qseqid"] == gene_id]
         gene_broken_dmnd_ali.to_csv(f"{dir_path}/broken_rev_ali.tsv", sep="\t", index=None)
-        try:
-            subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
-        except:
-            print(gene_id)
-            break
+        subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
+        
         gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == gene_id]
         gene_ipr_doms.to_csv(f"{dir_path}/ori_f_doms.tsv", sep="\t", index=None)
         sub_gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == subj_id]
