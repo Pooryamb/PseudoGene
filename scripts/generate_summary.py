@@ -30,8 +30,7 @@ all_pgs_paths = glob.glob("../data/manual_checking/*/*/")
 all_pf_pgs_paths = glob.glob("../data/manual_checking/pf/*/")
 
 # This part is for finding the difference between the number of rbhs of pseudogene and their templates
-# orthos_tbl_path = sys.argv[1]
-orthos_tbl_path = "../data/rbh_tb927_trypanosomes.tsv"
+orthos_tbl_path = sys.argv[1]
 rbh_df = pd.read_csv(orthos_tbl_path, sep="\t")
 source_org, closest_org = rbh_df.columns[:2]
 pg_subj_orths_count = []
