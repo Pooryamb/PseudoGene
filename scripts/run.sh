@@ -93,6 +93,11 @@ ls ../data/manual_checking/*/*/seq4dnds/orths.nal | \
 parallel "nwk_file={.}_geneid.nwk; hyphy relax --alignment {} --tree \$nwk_file --test test"
 
 #move relax output to parent directory:
-find ../data/manual_checking -type f -name "orths.nal.RELAX.json" -exec sh -c 'mv "$0" "$(dirname "$0")/../"' {} \;
+for file in ../data/manual_checking/*/*/seq4dnds/orths.nal.RELAX.json; do
+    if [ -f "$file" ]; then
+        parent_dir=$(dirname "$file")/..
+        cp "$file" "$parent_dir"
+    fi
+done
 
 python generate_summary.py $orths_tbl_path
