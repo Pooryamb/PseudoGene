@@ -94,4 +94,4 @@ parallel "nwk_file={.}_geneid.nwk; hyphy relax --alignment {} --tree \$nwk_file 
 #move relax output to parent directory:
 find ../data/manual_checking -type f -name "orths.nal.RELAX.json" -exec sh -c 'mv "$0" "$(dirname "$0")/../"' {} \;
 
-python generate_summary.py
+python generate_summary.py $orths_tbl_path
