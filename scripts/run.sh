@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 mkdir -p "../data"
 # Adjust the following lines if you plan to run this script for a new organism
 wget -P ../ https://zenodo.org/records/11094116/files/data.tar.gz
