@@ -43,48 +43,54 @@ ipr_sadj_prot = sig_inc_dom_cov_after_correction[["protein_id"]].merge(ipr_sadj_
 
 #First, we take care of query-subject alignments that query aligns with subject with a positive frame
 ipr_sadj_prot_p = ipr_sadj_prot[~(ipr_sadj_prot["protein_id"].str.contains("__negf"))]
-ipr_sadj_prot_p = break_sadj_qname_pf(ipr_sadj_prot_p)
+if not(ipr_sadj_prot_p.empty):
+    ipr_sadj_prot_p = break_sadj_qname_pf(ipr_sadj_prot_p)
 
-dmnd_alis_pg_p = dmnd_alis.merge(ipr_sadj_prot_p[["query", "subject"]].drop_duplicates(), left_on =["qseqid", "sseqid"] , right_on =["query", "subject"])
+    dmnd_alis_pg_p = dmnd_alis.merge(ipr_sadj_prot_p[["query", "subject"]].drop_duplicates(), left_on =["qseqid", "sseqid"] , right_on =["query", "subject"])
 
-broken_alis_pg_p = break_dmndali2frames_and_types(dmnd_alis_pg_p, start_stop_pos_ori)
+    broken_alis_pg_p = break_dmndali2frames_and_types(dmnd_alis_pg_p, start_stop_pos_ori)
 
-for gene_id in set(ipr_sadj_prot_p["query"]):
-    dir_path = f"../data/manual_checking/pf/{gene_id}"
-    Path(dir_path).mkdir(parents=True, exist_ok=True)
-    gene_dmnd_ali = dmnd_alis_pg_p[dmnd_alis_pg_p["qseqid"] == gene_id]
-    gene_dmnd_ali.to_csv(f"{dir_path}/nonbroken_ali.tsv", sep="\t", index=None)
-    subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
-    gene_broken_dmnd_ali = broken_alis_pg_p[broken_alis_pg_p["qseqid"] == gene_id]
-    gene_broken_dmnd_ali.to_csv(f"{dir_path}/broken_ali.tsv", sep="\t", index=None)
-    gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == gene_id]
-    gene_ipr_doms.to_csv(f"{dir_path}/ori_f_doms.tsv", sep="\t", index=None)
-    sub_gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == subj_id]
-    sub_gene_ipr_doms.to_csv(f"{dir_path}/subject_doms.tsv", sep="\t", index=None)
-    corrected_ipr_doms = ipr_sadj_prot_p[ipr_sadj_prot_p["query"] == gene_id]
-    corrected_ipr_doms.to_csv(f"{dir_path}/correctedseq_doms.tsv", sep="\t", index=None)
+    for gene_id in set(ipr_sadj_prot_p["query"]):
+        dir_path = f"../data/manual_checking/pf/{gene_id}"
+        Path(dir_path).mkdir(parents=True, exist_ok=True)
+        gene_dmnd_ali = dmnd_alis_pg_p[dmnd_alis_pg_p["qseqid"] == gene_id]
+        gene_dmnd_ali.to_csv(f"{dir_path}/nonbroken_ali.tsv", sep="\t", index=None)
+        subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
+        gene_broken_dmnd_ali = broken_alis_pg_p[broken_alis_pg_p["qseqid"] == gene_id]
+        gene_broken_dmnd_ali.to_csv(f"{dir_path}/broken_ali.tsv", sep="\t", index=None)
+        gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == gene_id]
+        gene_ipr_doms.to_csv(f"{dir_path}/ori_f_doms.tsv", sep="\t", index=None)
+        sub_gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == subj_id]
+        sub_gene_ipr_doms.to_csv(f"{dir_path}/subject_doms.tsv", sep="\t", index=None)
+        corrected_ipr_doms = ipr_sadj_prot_p[ipr_sadj_prot_p["query"] == gene_id]
+        corrected_ipr_doms.to_csv(f"{dir_path}/correctedseq_doms.tsv", sep="\t", index=None)
     
 #Now, we take care of query-subject alignments that query aligns with subject with a negative frame
 #For those aligning with a negative frame, having the broken alignments is not helpful
 ipr_sadj_prot_n = ipr_sadj_prot[ipr_sadj_prot["protein_id"].str.contains("__negf")]
-ipr_sadj_prot_n["subject"] = ipr_sadj_prot["protein_id"].str.split("__", expand=True)[1]
-ipr_sadj_prot_n = ipr_sadj_prot_n[['query', 'subject', 'db', 'db_acc', 'db_desc', 'ipr_desc', 'domstart', 'domend']]
+if not(ipr_sadj_prot_n.empty):
+    ipr_sadj_prot_n["subject"] = ipr_sadj_prot["protein_id"].str.split("__", expand=True)[1]
+    ipr_sadj_prot_n = ipr_sadj_prot_n[['query', 'subject', 'db', 'db_acc', 'db_desc', 'ipr_desc', 'domstart', 'domend']]
 
-dmnd_alis_pg_n = dmnd_alis.merge(ipr_sadj_prot_n[["query", "subject"]].drop_duplicates(), left_on =["qseqid", "sseqid"] , right_on =["query", "subject"]).drop(columns = ["query", "subject"])
-reversed_aln = reverse_frame(dmnd_alis_pg_n, ["qlen", ["qstart", "qend"]],{"qframe":{x:-x for x in [1,2,3,-1,-2,-3]}} )
-broken_rev_alis_pg_n = break_dmndali2frames(reversed_aln)
+    dmnd_alis_pg_n = dmnd_alis.merge(ipr_sadj_prot_n[["query", "subject"]].drop_duplicates(), left_on =["qseqid", "sseqid"] , right_on =["query", "subject"]).drop(columns = ["query", "subject"])
+    reversed_aln = reverse_frame(dmnd_alis_pg_n, ["qlen", ["qstart", "qend"]],{"qframe":{x:-x for x in [1,2,3,-1,-2,-3]}} )
+    broken_rev_alis_pg_n = break_dmndali2frames(reversed_aln)
 
-for gene_id in set(ipr_sadj_prot_n["query"]):
-    dir_path = f"../data/manual_checking/nf/{gene_id}"
-    Path(dir_path).mkdir(parents=True, exist_ok=True)
-    gene_dmnd_ali = dmnd_alis_pg_n[dmnd_alis_pg_n["qseqid"] == gene_id]
-    gene_dmnd_ali.to_csv(f"{dir_path}/nonbroken_ali.tsv", sep="\t", index=None)
-    gene_broken_dmnd_ali = broken_rev_alis_pg_n[broken_rev_alis_pg_n["qseqid"] == gene_id]
-    gene_broken_dmnd_ali.to_csv(f"{dir_path}/broken_rev_ali.tsv", sep="\t", index=None)
-    subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
-    gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == gene_id]
-    gene_ipr_doms.to_csv(f"{dir_path}/ori_f_doms.tsv", sep="\t", index=None)
-    sub_gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == subj_id]
-    sub_gene_ipr_doms.to_csv(f"{dir_path}/subject_doms.tsv", sep="\t", index=None)
-    corrected_ipr_doms = ipr_sadj_prot_n[ipr_sadj_prot_n["query"] == gene_id]
-    corrected_ipr_doms.to_csv(f"{dir_path}/correctedseq_doms.tsv", sep="\t", index=None)
+    for gene_id in set(ipr_sadj_prot_n["query"]):
+        dir_path = f"../data/manual_checking/nf/{gene_id}"
+        Path(dir_path).mkdir(parents=True, exist_ok=True)
+        gene_dmnd_ali = dmnd_alis_pg_n[dmnd_alis_pg_n["qseqid"] == gene_id]
+        gene_dmnd_ali.to_csv(f"{dir_path}/nonbroken_ali.tsv", sep="\t", index=None)
+        gene_broken_dmnd_ali = broken_rev_alis_pg_n[broken_rev_alis_pg_n["qseqid"] == gene_id]
+        gene_broken_dmnd_ali.to_csv(f"{dir_path}/broken_rev_ali.tsv", sep="\t", index=None)
+        try:
+            subj_id = gene_dmnd_ali.iloc[0]["sseqid"]
+        except:
+            print(gene_id)
+            break
+        gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == gene_id]
+        gene_ipr_doms.to_csv(f"{dir_path}/ori_f_doms.tsv", sep="\t", index=None)
+        sub_gene_ipr_doms = ipr_ori_prot[ipr_ori_prot["protein_id"] == subj_id]
+        sub_gene_ipr_doms.to_csv(f"{dir_path}/subject_doms.tsv", sep="\t", index=None)
+        corrected_ipr_doms = ipr_sadj_prot_n[ipr_sadj_prot_n["query"] == gene_id]
+        corrected_ipr_doms.to_csv(f"{dir_path}/correctedseq_doms.tsv", sep="\t", index=None)
